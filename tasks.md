@@ -3,10 +3,10 @@
 ## 1. Base de Datos (PostgreSQL / Supabase)
 
 ### 1.1. Análisis y Diseño [[WIA-10](https://linear.app/remoto-now/issue/WIA-10/11-analisis-y-diseno-de-base-de-datos)]
-- [ ] Analizar el dataset de Kaggle y extraer los campos relevantes.
-- [ ] Definir el modelo de datos normalizado (tablas, relaciones, claves primarias y foráneas).
-- [ ] Crear un diagrama entidad-relación (ER) para la base de datos.
-- [ ] Documentar el modelo de datos propuesto.
+- [x] Analizar el dataset de Kaggle y extraer los campos relevantes. _(Completado: Se documentaron los campos y su significado en README de database)_
+- [x] Definir el modelo de datos normalizado (tablas, relaciones, claves primarias y foráneas). _(Completado: Modelo documentado y diagrama ER generado en README de database)_
+- [x] Crear un diagrama entidad-relación (ER) para la base de datos. _(Completado: Ver src/database/README.md)_
+- [x] Documentar el modelo de datos propuesto. _(Completado: Ver src/database/README.md)_
 
 ### 1.2. Implementación [[WIA-11](https://linear.app/remoto-now/issue/WIA-11/12-implementacion-de-base-de-datos)]
 - [ ] Crear el proyecto en Supabase.
