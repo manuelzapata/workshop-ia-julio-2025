@@ -9,6 +9,8 @@
 - [ ] Documentar el modelo de datos propuesto.
 
 ### 1.2. Implementación [[WIA-11](https://linear.app/remoto-now/issue/WIA-11/12-implementacion-de-base-de-datos)]
+- [ ] Crear el proyecto en Supabase.
+- [ ] Configurar la base de datos inicial en Supabase.
 - [ ] Crear las tablas en Supabase/PostgreSQL según el modelo normalizado.
 - [ ] Definir índices y restricciones necesarias para integridad y rendimiento.
 - [ ] Probar la inserción de datos de ejemplo para validar el modelo.
