@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+- Use singular names for tables. For example, `product` instead of `products`.
+- Always add the following audit columns to each table: `created_at`, `created_by`, `updated_at`, `updated_by`.
