@@ -16,7 +16,7 @@ Toma las decisiones de diseño que definiste y escribe un ADR para cada una de e
 
 El formato del nombre del archivo debe ser `01_nombre_decision.md`, `02_nombre_decision.md`, etc.
 
-Hoy es 21 de junio de 2025.
+Hoy es 3 de julio de 2025.
 
 Aquí tienes dos ejemplos de ADR:
 
