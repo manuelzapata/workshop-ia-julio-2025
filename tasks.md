@@ -9,10 +9,10 @@
 - [x] Documentar el modelo de datos propuesto. _(Completado: Ver src/database/README.md)_
 
 ### 1.2. Implementación [[WIA-11](https://linear.app/remoto-now/issue/WIA-11/12-implementacion-de-base-de-datos)]
-- [ ] Crear el proyecto en Supabase.
-- [ ] Configurar la base de datos inicial en Supabase.
-- [ ] Crear las tablas en Supabase/PostgreSQL según el modelo normalizado.
-- [ ] Definir índices y restricciones necesarias para integridad y rendimiento.
+- [x] Crear el proyecto en Supabase. _(Completado: Proyecto 'saas-analytics' creado en la organización 'Workshop IA')_
+- [x] Configurar la base de datos inicial en Supabase. _(Completado: Tablas y esquema creados según el modelo)_
+- [x] Crear las tablas en Supabase/PostgreSQL según el modelo normalizado. _(Completado)_
+- [x] Definir índices y restricciones necesarias para integridad y rendimiento. _(Completado)_
 - [ ] Probar la inserción de datos de ejemplo para validar el modelo.
 
 ### 1.3. Carga de Datos [[WIA-12](https://linear.app/remoto-now/issue/WIA-12/13-carga-de-datos-en-base-de-datos)]
