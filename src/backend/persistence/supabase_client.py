@@ -1,5 +1,5 @@
 import httpx
-from src.backend.core.config import settings
+from core.config import settings
 
 class SupabaseClient:
     def __init__(self):
