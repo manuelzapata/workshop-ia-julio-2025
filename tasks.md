@@ -24,9 +24,19 @@
 ## 2. Backend (FastAPI)
 
 ### 2.1. Configuración Inicial [[WIA-13](https://linear.app/remoto-now/issue/WIA-13/21-configuracion-inicial-del-backend)]
-- [ ] Crear el proyecto base de FastAPI.
-- [ ] Configurar la conexión a la base de datos (Supabase/PostgreSQL).
-- [ ] Definir la estructura de carpetas del backend.
+- [ ] Inicializar proyecto base de FastAPI (entorno virtual, main.py, requirements.txt).
+- [ ] Definir estructura de carpetas siguiendo arquitectura de tres capas:
+      - api/ (routers/endpoints)
+      - services/ (lógica de negocio)
+      - persistence/ (acceso a datos, conexión Supabase/PostgreSQL, modelos y repositorios)
+      - core/ (configuración, utilidades, middlewares)
+- [ ] Configurar gestión de dependencias (FastAPI, Uvicorn, requests/httpx para Supabase, etc).
+- [ ] Configurar archivo de settings y variables de entorno (.env, config.py).
+- [ ] Implementar módulo de conexión a Supabase vía HTTP (requests/httpx).
+- [ ] Configurar CORS y middlewares básicos (logging, manejo de errores).
+- [ ] Crear endpoint de salud (healthcheck) y esqueleto de routers para endpoints futuros.
+- [ ] Verificar y personalizar la documentación automática (OpenAPI/Swagger).
+- [ ] Añadir instrucciones básicas en README para levantar el backend y probar el endpoint de salud.
 
 ### 2.2. Endpoints de API [[WIA-14](https://linear.app/remoto-now/issue/WIA-14/22-endpoints-de-api-backend)]
 - [ ] Implementar endpoint protegido para cargar manualmente el dataset (subida de archivo y procesamiento).
