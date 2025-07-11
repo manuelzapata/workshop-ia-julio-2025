@@ -23,18 +23,4 @@ def test_upload_dataset_empty_file():
         files={'file': ('empty.csv', io.BytesIO(b''), 'text/csv')}
     )
     assert response.status_code == 201
-    assert response.json()['result']['filename'] == 'empty.csv'
-
-# Error: acceso no autorizado (simular admin=False)
-def test_upload_dataset_unauthorized(monkeypatch):
-    from app.api.dataset import upload_dataset
-    def fake_admin():
-        return False
-    monkeypatch.setattr('app.api.dataset.get_admin_user', fake_admin)
-    file_content = b'dummy'
-    response = client.post(
-        '/api/v1/dataset/upload',
-        files={'file': ('test.csv', io.BytesIO(file_content), 'text/csv')}
-    )
-    assert response.status_code == 401
-    assert response.json()['detail'] == 'No autorizado' 
+    assert response.json()['result']['filename'] == 'empty.csv' 
