@@ -20,8 +20,18 @@ class SupabaseClient:
 
     async def post(self, path: str, data: dict = None):
         url = f'{self.base_url}{path}'
-        response = await self.client.post(url, headers=self.headers, json=data)
-        response.raise_for_status()
-        return response.json()
+        headers = self.headers.copy()
+        headers['Prefer'] = 'return=representation'
+        response = await self.client.post(url, headers=headers, json=data)
+        try:
+            response.raise_for_status()
+        except httpx.HTTPStatusError:
+            print('SUPABASE ERROR:', response.text)
+            raise
+        try:
+            return response.json()
+        except Exception:
+            print('SUPABASE NON-JSON RESPONSE:', response.text)
+            return {'error': 'Non-JSON response', 'content': response.text, 'status_code': response.status_code}
 
 supabase_client = SupabaseClient() 
