@@ -39,18 +39,19 @@
 - [x] Añadir instrucciones básicas en README para levantar el backend y probar el endpoint de salud.
 
 ### 2.2. Endpoints de API [[WIA-14](https://linear.app/remoto-now/issue/WIA-14/22-endpoints-de-api-backend)]
-- [ ] Implementar endpoint protegido para cargar manualmente el dataset (subida de archivo y procesamiento).
-- [ ] Implementar endpoint para obtener métricas generales del dashboard.
-- [ ] Implementar endpoint para obtener detalles de una empresa específica.
-- [ ] Validar y documentar los endpoints con OpenAPI/Swagger.
+- [x] Implementar endpoint protegido para cargar manualmente el dataset (subida de archivo y procesamiento).
+- [x] Implementar endpoint para obtener métricas generales del dashboard.
+- [x] Implementar endpoint para obtener detalles de una empresa específica.
+- [x] Validar y documentar los endpoints con OpenAPI/Swagger.
 
 ### 2.3. Lógica de Negocio [[WIA-15](https://linear.app/remoto-now/issue/WIA-15/23-logica-de-negocio-backend)]
-- [ ] Implementar lógica para procesar y transformar los datos del dataset según las necesidades del dashboard.
-- [ ] Gestionar errores y validaciones en los endpoints.
+- [x] Implementar lógica para procesar y transformar los datos del dataset según las necesidades del dashboard.
+- [x] Gestionar errores y validaciones en los endpoints.
 
 ### 2.4. Pruebas [[WIA-16](https://linear.app/remoto-now/issue/WIA-16/24-pruebas-backend)]
-- [ ] Escribir pruebas unitarias para los endpoints y lógica de negocio.
-- [ ] Probar la integración con la base de datos.
+- [x] Escribir pruebas unitarias para los endpoints y lógica de negocio. _(Incluye mocks y uso de dependency_overrides)_
+- [x] Probar la integración con la base de datos. _(Mockeado para evitar dependencias externas)_
+- [x] Documentar en README cómo ejecutar las pruebas automatizadas.
 
 ---
 
@@ -88,4 +89,9 @@
 
 - [ ] Documentar la arquitectura general del sistema.
 - [ ] Documentar el uso de la API y ejemplos de consumo.
-- [ ] Documentar el proceso de carga de datos y administración. 
+- [ ] Documentar el proceso de carga de datos y administración.
+
+---
+
+## Discovered During Work
+- [2025-07-10] Migración de Pydantic: Se reemplazó la clase interna Config por model_config = ConfigDict(...) en Settings para evitar warnings y cumplir con Pydantic v2+. 
