@@ -1,9 +1,10 @@
 from fastapi import UploadFile
-from app.persistence.repositories.dataset_repository import DatasetRepository
+from app.persistence.repositories.dataset_repository import DatasetRepository, map_row
 from app.persistence.repositories.industry_repository import IndustryRepository
 from app.persistence.repositories.location_repository import LocationRepository
 from app.persistence.repositories.investor_repository import InvestorRepository
 from app.persistence.repositories.company_investor_repository import CompanyInvestorRepository
+from app.persistence.supabase_client import supabase_client
 
 class DatasetService:
     def __init__(self, repository: DatasetRepository):
@@ -72,7 +73,7 @@ class DatasetService:
         companies_to_insert = []
         company_name_to_id = {}
         for row in rows:
-            company = self.repository.map_row(row)
+            company = map_row(row)
             # INDUSTRY
             industry_name = row.get('Industry', '').strip()
             company['industry_id'] = industry_map.get(industry_name)
@@ -93,7 +94,7 @@ class DatasetService:
         print('Empresas insertadas.')
         # Mapear company name a id
         for company in companies_to_insert:
-            company_obj = await self.repository.supabase_client.get('/rest/v1/company', params={'name': f"eq.{company['name']}"})
+            company_obj = await supabase_client.get('/rest/v1/company', params={'name': f"eq.{company['name']}"})
             if company_obj and isinstance(company_obj, list) and len(company_obj) > 0:
                 company_name_to_id[company['name']] = company_obj[0]['id']
         print('Mapeo de ids de empresas listo.')
