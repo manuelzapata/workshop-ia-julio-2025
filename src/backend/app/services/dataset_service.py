@@ -4,102 +4,157 @@ from app.persistence.repositories.industry_repository import IndustryRepository
 from app.persistence.repositories.location_repository import LocationRepository
 from app.persistence.repositories.investor_repository import InvestorRepository
 from app.persistence.repositories.company_investor_repository import CompanyInvestorRepository
-from app.persistence.supabase_client import supabase_client
+from app.persistence.repositories.company_repository import CompanyRepository
 
 class DatasetService:
     def __init__(self, repository: DatasetRepository):
         self.repository = repository
+        self.industry_repo = IndustryRepository()
+        self.location_repo = LocationRepository()
+        self.investor_repo = InvestorRepository()
+        self.company_repo = CompanyRepository()
+        self.company_investor_repo = CompanyInvestorRepository()
 
     async def process_dataset_upload(self, file: UploadFile) -> dict:
         print('Iniciando carga de dataset...')
         content = await file.read()
         rows = self.repository.parse_csv(content)
         print(f'Filas leídas del CSV: {len(rows)}')
-        # INDUSTRY
-        industries = set()
-        for row in rows:
-            if 'Industry' in row and row['Industry']:
-                industries.add(row['Industry'].strip())
+
+        industries = self._extract_unique_industries(rows)
         print(f'Industrias únicas detectadas: {len(industries)}')
-        industry_repo = IndustryRepository()
-        await industry_repo.bulk_insert(list(industries))
+        await self._bulk_insert_industries(industries)
         print('Industrias insertadas.')
-        # LOCATION
+
+        locations = self._extract_unique_locations(rows)
+        print(f'Ubicaciones únicas detectadas: {len(locations)}')
+        await self._bulk_insert_locations(locations)
+        print('Ubicaciones insertadas.')
+
+        investors = self._extract_unique_investors(rows)
+        print(f'Inversionistas únicos detectados: {len(investors)}')
+        await self._bulk_insert_investors(investors)
+        print('Inversionistas insertados.')
+
+        industry_map = await self._map_industries_to_ids(industries)
+        location_map = await self._map_locations_to_ids(locations)
+        print('Mapeo de ids de industria y ubicación listo.')
+
+        companies_to_insert = self._prepare_companies(rows, industry_map, location_map)
+        print(f'Empresas a insertar: {len(companies_to_insert)}')
+        result = await self.repository.bulk_insert('company', companies_to_insert)
+        print('Empresas insertadas.')
+
+        company_name_to_id = await self._map_company_names_to_ids(companies_to_insert)
+        print('Mapeo de ids de empresas listo.')
+
+        relations = await self._prepare_company_investor_relations(rows, company_name_to_id)
+        print(f'Relaciones company_investor a insertar: {len(relations)}')
+        await self._bulk_insert_company_investors(relations)
+        print('Relaciones company_investor insertadas.')
+        return {'inserted': len(rows), 'result': result}
+
+    def _normalize(self, value: str) -> str:
+        return value.strip().lower() if value else ''
+
+    def _parse_hq(self, hq_string: str | None) -> tuple[str, str | None, str] | None:
+        if not hq_string:
+            return None
+
+        parts = [p.strip() for p in hq_string.split(',')]
+        city, state_province, country = None, None, None
+
+        if len(parts) == 3:
+            city, state_province, country = parts
+        elif len(parts) == 2:
+            city, country = parts
+            state_province = None
+        else:
+            return None
+
+        if not city or not country:
+            return None
+
+        return (
+            self._normalize(city),
+            self._normalize(state_province) if state_province else None,
+            self._normalize(country)
+        )
+
+    def _extract_unique_industries(self, rows: list[dict]) -> set:
+        return set(self._normalize(row['Industry']) for row in rows if 'Industry' in row and row['Industry'])
+
+    def _extract_unique_locations(self, rows: list[dict]) -> set[tuple[str, str | None, str]]:
         locations = set()
         for row in rows:
-            if 'HQ' in row and row['HQ']:
-                parts = [p.strip() for p in row['HQ'].split(',')]
-                if len(parts) == 3:
-                    city, state_province, country = parts
-                elif len(parts) == 2:
-                    city, country = parts
-                    state_province = None
-                else:
-                    continue
-                locations.add((city, state_province, country))
-        print(f'Ubicaciones únicas detectadas: {len(locations)}')
-        location_repo = LocationRepository()
-        await location_repo.bulk_insert([
-            {'city': city, 'state_province': state_province, 'country': country}
-            for city, state_province, country in locations
-        ])
-        print('Ubicaciones insertadas.')
-        # INVESTOR
+            parsed_location = self._parse_hq(row.get('HQ'))
+            if parsed_location:
+                locations.add(parsed_location)
+        return locations
+
+    def _extract_unique_investors(self, rows: list[dict]) -> set:
         investors = set()
         for row in rows:
             if 'Top Investors' in row and row['Top Investors']:
                 for inv in row['Top Investors'].split(','):
-                    name = inv.strip()
+                    name = self._normalize(inv)
                     if name:
                         investors.add(name)
-        print(f'Inversionistas únicos detectados: {len(investors)}')
-        investor_repo = InvestorRepository()
-        await investor_repo.bulk_insert(list(investors))
-        print('Inversionistas insertados.')
-        # Poblar company (requiere industry_id y location_id)
-        # Mapear industry/location a id
+        return investors
+
+    async def _bulk_insert_industries(self, industries: set) -> None:
+        await self.industry_repo.bulk_insert(list(industries))
+
+    async def _bulk_insert_locations(self, locations: set) -> None:
+        await self.location_repo.bulk_insert([
+            {'city': city, 'state_province': state_province, 'country': country}
+            for city, state_province, country in locations
+        ])
+
+    async def _bulk_insert_investors(self, investors: set) -> None:
+        await self.investor_repo.bulk_insert(list(investors))
+
+    async def _map_industries_to_ids(self, industries: set) -> dict:
         industry_map = {}
         for name in industries:
-            obj = await industry_repo.get_by_name(name)
+            obj = await self.industry_repo.get_by_name(name)
             if obj:
                 industry_map[name] = obj['id']
+        return industry_map
+
+    async def _map_locations_to_ids(self, locations: set) -> dict:
         location_map = {}
         for city, state_province, country in locations:
-            obj = await location_repo.get_by_fields(city, state_province, country)
+            obj = await self.location_repo.get_by_fields(city, state_province, country)
             if obj:
                 location_map[(city, state_province, country)] = obj['id']
-        print('Mapeo de ids de industria y ubicación listo.')
-        # Insertar companies con los ids correctos
-        companies_to_insert = []
-        company_name_to_id = {}
+        return location_map
+
+    def _prepare_companies(self, rows: list[dict], industry_map: dict, location_map: dict) -> list[dict]:
+        companies = []
         for row in rows:
             company = map_row(row)
-            # INDUSTRY
-            industry_name = row.get('Industry', '').strip()
+            industry_name = self._normalize(row.get('Industry', ''))
             company['industry_id'] = industry_map.get(industry_name)
-            # LOCATION
-            hq = row.get('HQ', '')
-            parts = [p.strip() for p in hq.split(',')] if hq else []
-            if len(parts) == 3:
-                city, state_province, country = parts
-            elif len(parts) == 2:
-                city, country = parts
-                state_province = None
+
+            parsed_location = self._parse_hq(row.get('HQ'))
+            if parsed_location:
+                company['location_id'] = location_map.get(parsed_location)
             else:
-                city = state_province = country = None
-            company['location_id'] = location_map.get((city, state_province, country))
-            companies_to_insert.append(company)
-        print(f'Empresas a insertar: {len(companies_to_insert)}')
-        result = await self.repository.bulk_insert('company', companies_to_insert)
-        print('Empresas insertadas.')
-        # Mapear company name a id
-        for company in companies_to_insert:
-            company_obj = await supabase_client.get('/rest/v1/company', params={'name': f"eq.{company['name']}"})
-            if company_obj and isinstance(company_obj, list) and len(company_obj) > 0:
-                company_name_to_id[company['name']] = company_obj[0]['id']
-        print('Mapeo de ids de empresas listo.')
-        # Poblar company_investor
-        company_investor_repo = CompanyInvestorRepository()
+                company['location_id'] = None
+
+            companies.append(company)
+        return companies
+
+    async def _map_company_names_to_ids(self, companies: list[dict]) -> dict:
+        company_name_to_id = {}
+        for company in companies:
+            company_obj = await self.company_repo.get_by_name(company['name'])
+            if company_obj:
+                company_name_to_id[company['name']] = company_obj['id']
+        return company_name_to_id
+
+    async def _prepare_company_investor_relations(self, rows: list[dict], company_name_to_id: dict) -> list[dict]:
         relations = []
         for row in rows:
             company_id = company_name_to_id.get(row.get('Company Name', '').strip())
@@ -107,11 +162,11 @@ class DatasetService:
                 continue
             if 'Top Investors' in row and row['Top Investors']:
                 for inv in row['Top Investors'].split(','):
-                    investor_name = inv.strip()
-                    investor_obj = await investor_repo.get_by_name(investor_name)
+                    investor_name = self._normalize(inv)
+                    investor_obj = await self.investor_repo.get_by_name(investor_name)
                     if investor_obj:
                         relations.append({'company_id': company_id, 'investor_id': investor_obj['id']})
-        print(f'Relaciones company_investor a insertar: {len(relations)}')
-        await company_investor_repo.bulk_insert(relations)
-        print('Relaciones company_investor insertadas.')
-        return {'inserted': len(rows), 'result': result} 
+        return relations
+
+    async def _bulk_insert_company_investors(self, relations: list[dict]) -> None:
+        await self.company_investor_repo.bulk_insert(relations) 

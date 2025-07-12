@@ -5,4 +5,10 @@ class CompanyRepository:
         result = await supabase_client.get('/rest/v1/company', params={'id': f'eq.{company_id}'})
         if result and isinstance(result, list) and len(result) > 0:
             return result[0]
+        return None
+
+    async def get_by_name(self, name: str) -> dict | None:
+        result = await supabase_client.get('/rest/v1/company', params={'name': f'eq.{name}'})
+        if result and isinstance(result, list) and len(result) > 0:
+            return result[0]
         return None 
