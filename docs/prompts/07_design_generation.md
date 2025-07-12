@@ -15,3 +15,9 @@ El prompt debe ser lo más detallado posible y debe incluir:
 Solo quiero el diseño de la UI, no una propuesta de implementación.
 
 Genera el prompt en markdown, con un máximo de 1000 caracteres.
+
+# Prompt 2
+
+Analiza la tarea 3.1 en @tasks.md y detallala mejor para que sea clara la implementación.
+
+Toma como contexto @planning.md y @/adrs 
