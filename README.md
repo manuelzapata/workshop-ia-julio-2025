@@ -37,7 +37,7 @@ Puedes subir el dataset de ejemplo con el siguiente comando (ajusta el puerto si
 
 ```bash
 curl -X POST \
-  -F "file=@/Users/manuel/dev/remotonow/workshop-ia-julio-2025/src/database/dataset.csv" \
+  -F "file=@/RUTA-REPOSITORIO/workshop-ia-julio-2025/src/database/dataset.csv" \
   http://127.0.0.1:8000/api/v1/dataset/upload
 ```
 
