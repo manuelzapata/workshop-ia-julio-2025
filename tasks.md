@@ -94,4 +94,6 @@
 ---
 
 ## Discovered During Work
-- [2025-07-10] Migración de Pydantic: Se reemplazó la clase interna Config por model_config = ConfigDict(...) en Settings para evitar warnings y cumplir con Pydantic v2+. 
+- [2025-07-10] Migración de Pydantic: Se reemplazó la clase interna Config por model_config = ConfigDict(...) en Settings para evitar warnings y cumplir con Pydantic v2+.
+- [x] Optimización de bulk_insert en todos los repositorios (2024-06-18)
+- [x] Agregar tests unitarios para bulk_insert en investor, industry, location y company_investor (2024-06-18) 

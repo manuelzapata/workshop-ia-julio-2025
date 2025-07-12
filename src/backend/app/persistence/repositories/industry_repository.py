@@ -8,12 +8,24 @@ class IndustryRepository:
         return None
 
     async def bulk_insert(self, industries: list[str]) -> list[dict]:
-        # Insertar solo las industrias que no existen
-        inserted = []
-        for name in industries:
-            existing = await self.get_by_name(name)
-            if not existing:
-                data = {'name': name}
-                res = await supabase_client.post('/rest/v1/industry', [data])
-                inserted.append(res)
-        return inserted 
+        if not industries:
+            return []
+        
+        # Get all existing industries first (assuming low volume)
+        existing = await supabase_client.get('/rest/v1/industry')
+        existing_names = set(e['name'] for e in existing) if existing else set()
+        
+        # Filter out existing industries
+        to_insert = [name for name in industries if name not in existing_names]
+        
+        if not to_insert:
+            return []
+        
+        # Bulk insert all new industries at once
+        data = [{'name': name} for name in to_insert]
+        try:
+            result = await supabase_client.post('/rest/v1/industry', data)
+            return result if isinstance(result, list) else [result]
+        except Exception as e:
+            # Log error and handle appropriately
+            raise Exception(f"Failed to bulk insert industries: {e}") 

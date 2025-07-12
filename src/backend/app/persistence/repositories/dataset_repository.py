@@ -15,13 +15,18 @@ COLUMN_MAP = {
 
 # Solo columnas válidas para Supabase
 VALID_COLUMNS = {
-    'name', 'founded_year', 'total_funding', 'arr', 'valuation', 'employees', 'g2_rating', 'products'
+    'name', 'founded_year', 'total_funding', 'arr', 'valuation', 'employees', 'g2_rating', 'products', 'industry_id', 'location_id'
 }
 
 def clean_money(value):
     if not value or value == 'N/A':
         return None
     value = value.replace('$', '').replace(',', '').strip()
+    if value.endswith('T'):
+        try:
+            return float(value[:-1]) * 1_000_000_000_000
+        except Exception:
+            return None
     if value.endswith('B'):
         try:
             return float(value[:-1]) * 1_000_000_000
@@ -60,6 +65,8 @@ def clean_row(row):
         'valuation': clean_money(row.get('valuation')),
         'employees': clean_int(row.get('employees')),
         'g2_rating': float(row.get('g2_rating')) if row.get('g2_rating') not in (None, '', 'N/A') else None,
+        'industry_id': row.get('industry_id'),
+        'location_id': row.get('location_id'),
     }
     # Procesar productos como lista JSON si existe
     if row.get('Product'):
@@ -74,7 +81,6 @@ class DatasetRepository:
         # Mapear y limpiar columnas antes de enviar a Supabase
         mapped_rows = [map_row(row) for row in rows]
         cleaned_rows = [clean_row(row) for row in mapped_rows]
-        print('DEBUG - Datos enviados a Supabase:', cleaned_rows)
         path = f'/rest/v1/{table}'
         return await supabase_client.post(path, cleaned_rows)
 

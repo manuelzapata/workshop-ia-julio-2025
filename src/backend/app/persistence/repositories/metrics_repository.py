@@ -10,4 +10,7 @@ class MetricsRepository:
     async def get_all_valuations(self) -> list[dict]:
         return await supabase_client.get('/rest/v1/company', params={'select': 'valuation'})
 
+    async def get_all_locations(self) -> list[dict]:
+        return await supabase_client.get('/rest/v1/location')
+
 # No se instancia aquí, la instancia se hace en el servicio o por inyección de dependencias 

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "SaaSAnalytics",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

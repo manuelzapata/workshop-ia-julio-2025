@@ -9,13 +9,15 @@ class CompanyInvestorRepository:
         return None
 
     async def bulk_insert(self, relations: list[dict]) -> list[dict]:
+        if not relations:
+            return []
+        # Traer todas las relaciones existentes (asumiendo volumen bajo)
+        existing = await supabase_client.get('/rest/v1/company_investor')
+        existing_set = set((e['company_id'], e['investor_id']) for e in existing) if existing else set()
+        to_insert = [rel for rel in relations if (rel['company_id'], rel['investor_id']) not in existing_set]
         inserted = []
-        for rel in relations:
-            company_id = rel['company_id']
-            investor_id = rel['investor_id']
-            existing = await self.get_by_ids(company_id, investor_id)
-            if not existing:
-                data = {'company_id': company_id, 'investor_id': investor_id}
-                res = await supabase_client.post('/rest/v1/company_investor', [data])
-                inserted.append(res)
+        for rel in to_insert:
+            data = {'company_id': rel['company_id'], 'investor_id': rel['investor_id']}
+            res = await supabase_client.post('/rest/v1/company_investor', [data])
+            inserted.append(res)
         return inserted 

@@ -14,9 +14,11 @@ def test_get_general_metrics_success():
     class DummyRepo:
         async def get_all_companies(self):
             return [
-                {'revenue': 100, 'valuation': 200},
-                {'revenue': 200, 'valuation': 400}
+                {'arr': 100, 'valuation': 200, 'total_funding': 1000},
+                {'arr': 200, 'valuation': 400, 'total_funding': 0}
             ]
+        async def get_all_locations(self):
+            return []
     app.dependency_overrides[get_metrics_service] = lambda: MetricsService(DummyRepo())
     response = client.get('/api/v1/metrics/')
     assert response.status_code == 200
@@ -24,6 +26,9 @@ def test_get_general_metrics_success():
     assert data['total_companies'] == 2
     assert data['total_revenue'] == 300
     assert data['average_valuation'] == 300
+    assert data['funding_rounds'] == 1
+    assert data['top_location']['name'] is None
+    assert data['top_location']['companies'] == 0
     app.dependency_overrides = {}
 
 # Edge: simular respuesta vacía (mock)
@@ -31,10 +36,19 @@ def test_get_general_metrics_empty():
     class DummyRepo:
         async def get_all_companies(self):
             return []
+        async def get_all_locations(self):
+            return []
     app.dependency_overrides[get_metrics_service] = lambda: MetricsService(DummyRepo())
     response = client.get('/api/v1/metrics/')
     assert response.status_code == 200
-    assert response.json() == {'total_companies': 0, 'total_revenue': 0, 'average_valuation': 0}
+    expected = {
+        'total_companies': 0,
+        'total_revenue': 0,
+        'average_valuation': 0,
+        'funding_rounds': 0,
+        'top_location': {'name': None, 'companies': 0}
+    }
+    assert response.json() == expected
     app.dependency_overrides = {}
 
 # Error: simular error interno (mock)

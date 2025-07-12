@@ -12,9 +12,8 @@
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-pip install pytest  # Para ejecutar las pruebas
 cp .env.sample .env  # Edita las variables según tu entorno
-venv/bin/uvicorn src.backend.main:app --reload
+venv/bin/uvicorn app.main:app --reload
 ```
 
 ### Probar endpoint de salud
@@ -31,6 +30,16 @@ venv/bin/uvicorn src.backend.main:app --reload
 ### Variables de entorno
 
 Ver `.env.sample` para los valores requeridos.
+
+### Subir dataset de ejemplo vía curl
+
+Puedes subir el dataset de ejemplo con el siguiente comando (ajusta el puerto si es necesario):
+
+```bash
+curl -X POST \
+  -F "file=@/RUTA-REPOSITORIO/workshop-ia-julio-2025/src/database/dataset.csv" \
+  http://127.0.0.1:8000/api/v1/dataset/upload
+```
 
 ---
 
