@@ -58,19 +58,19 @@
 ## 3. Frontend (Next.js)
 
 ### 3.1. Configuración Inicial [[WIA-17](https://linear.app/remoto-now/issue/WIA-17/31-configuracion-inicial-del-frontend)]
-- [ ] **Inicializar Proyecto Next.js**:
-  - [ ] Usar `npx create-next-app@latest` en `src/frontend`.
-  - [ ] Configurar con JavaScript, Tailwind CSS, ESLint y App Router.
-- [ ] **Definir Estructura de Carpetas**:
-  - [ ] Crear `app/` para rutas y layouts.
-  - [ ] Crear `components/` con subcarpetas `ui/` (componentes genéricos) y `dashboard/` (componentes específicos).
-  - [ ] Crear `lib/` para utilidades (`utils.js`) y lógica de API (`api.js`).
-- [ ] **Configurar Entorno**:
-  - [ ] Crear `.env.local` con `NEXT_PUBLIC_API_URL`.
-  - [ ] Realizar una llamada de prueba al endpoint de `healthcheck` del backend.
-- [ ] **Crear Layout Base**:
-  - [ ] Modificar `app/layout.jsx` para la estructura principal (Header/Footer).
-  - [ ] Crear componentes esqueleto como `Header.jsx` y `Footer.jsx`.
+- [x] **Inicializar Proyecto Next.js**:
+  - [x] Usar `npx create-next-app@latest` en `src/frontend`.
+  - [x] Configurar con JavaScript, Tailwind CSS, ESLint y App Router.
+- [x] **Definir Estructura de Carpetas**:
+  - [x] Crear `app/` para rutas y layouts.
+  - [x] Crear `components/` con subcarpetas `ui/` (componentes genéricos) y `dashboard/` (componentes específicos).
+  - [x] Crear `lib/` para utilidades (`utils.js`) y lógica de API (`api.js`).
+- [x] **Configurar Entorno**:
+  - [x] Crear `.env.local` con `NEXT_PUBLIC_API_URL`.
+  - [x] Realizar una llamada de prueba al endpoint de `healthcheck` del backend.
+- [x] **Crear Layout Base**:
+  - [x] Modificar `app/layout.jsx` para la estructura principal (Header/Footer).
+  - [x] Crear componentes esqueleto como `Header.jsx` y `Footer.jsx`.
 
 ### 3.2. Dashboard [[WIA-18](https://linear.app/remoto-now/issue/WIA-18/32-dashboard-frontend)]
 - [ ] Implementar la página principal del dashboard.
