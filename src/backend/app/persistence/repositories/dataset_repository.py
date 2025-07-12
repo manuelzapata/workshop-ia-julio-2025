@@ -22,6 +22,11 @@ def clean_money(value):
     if not value or value == 'N/A':
         return None
     value = value.replace('$', '').replace(',', '').strip()
+    if value.endswith('T'):
+        try:
+            return float(value[:-1]) * 1_000_000_000_000
+        except Exception:
+            return None
     if value.endswith('B'):
         try:
             return float(value[:-1]) * 1_000_000_000
