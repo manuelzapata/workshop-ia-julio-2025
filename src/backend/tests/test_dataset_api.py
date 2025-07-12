@@ -12,14 +12,33 @@ os.environ['environment'] = 'test'
 client = TestClient(app)
 
 # Caso esperado: subir archivo válido
-def test_upload_dataset_success():
+def test_upload_dataset_success(monkeypatch):
+    # Mock principal repo
     class DummyRepo:
         async def bulk_insert(self, table, rows):
             return {'filename': 'test.csv'}
         def parse_csv(self, content):
-            return [{'nombre': 'foo', 'valor': 1}, {'nombre': 'bar', 'valor': 2}]
+            return [{'name': 'foo', 'value': 1}, {'name': 'bar', 'value': 2}]
+    # Mock secundarios
+    class DummyIndustryRepo:
+        async def bulk_insert(self, items): return None
+        async def get_by_name(self, name): return {'id': 1}
+    class DummyLocationRepo:
+        async def bulk_insert(self, items): return None
+        async def get_by_fields(self, city, state_province, country): return {'id': 1}
+    class DummyInvestorRepo:
+        async def bulk_insert(self, items): return None
+    # Mock supabase_client.get para company
+    async def fake_get(path, params=None):
+        if path == '/rest/v1/company':
+            return [{'id': 1, 'name': params['name'].split('.')[-1]}]
+        return []
+    monkeypatch.setattr('app.services.dataset_service.IndustryRepository', lambda: DummyIndustryRepo())
+    monkeypatch.setattr('app.services.dataset_service.LocationRepository', lambda: DummyLocationRepo())
+    monkeypatch.setattr('app.services.dataset_service.InvestorRepository', lambda: DummyInvestorRepo())
+    monkeypatch.setattr('app.persistence.supabase_client.supabase_client.get', fake_get)
     app.dependency_overrides[get_dataset_service] = lambda: DatasetService(DummyRepo())
-    file_content = b'nombre,valor\nfoo,1\nbar,2'
+    file_content = b'name,value\nfoo,1\nbar,2'
     response = client.post(
         '/api/v1/dataset/upload',
         files={'file': ('test.csv', io.BytesIO(file_content), 'text/csv')}

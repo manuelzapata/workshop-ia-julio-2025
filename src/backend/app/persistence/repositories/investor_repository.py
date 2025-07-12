@@ -8,11 +8,17 @@ class InvestorRepository:
         return None
 
     async def bulk_insert(self, investors: list[str]) -> list[dict]:
+        if not investors:
+            return []
+        # Consulta masiva de nombres existentes
+        names_str = ','.join([f'"{name}"' for name in investors])
+        params = {'name': f'in.({names_str})'}
+        existing = await supabase_client.get('/rest/v1/investor', params=params)
+        existing_names = set(e['name'] for e in existing) if existing else set()
+        to_insert = [name for name in investors if name not in existing_names]
         inserted = []
-        for name in investors:
-            existing = await self.get_by_name(name)
-            if not existing:
-                data = {'name': name}
-                res = await supabase_client.post('/rest/v1/investor', [data])
-                inserted.append(res)
+        for name in to_insert:
+            data = {'name': name}
+            res = await supabase_client.post('/rest/v1/investor', [data])
+            inserted.append(res)
         return inserted 
