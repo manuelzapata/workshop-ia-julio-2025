@@ -1,4 +1,5 @@
 from app.persistence.repositories.company_repository import CompanyRepository
+from app.utils.location_formatter import format_location
 
 class CompanyService:
     def __init__(self, repository: CompanyRepository):
@@ -15,7 +16,7 @@ class CompanyService:
         for company in companies:
             # Get location details
             location = company.get('location', {})
-            location_str = self._format_location(location)
+            location_str = format_location(location)
             
             # Get industry details
             industry = company.get('industry', {})
@@ -35,21 +36,4 @@ class CompanyService:
         formatted_companies.sort(key=lambda x: x.get('revenue', 0) or 0, reverse=True)
         
         return formatted_companies
-    
-    def _format_location(self, location: dict) -> str:
-        if not location:
-            return 'Unknown'
-        
-        city = location.get('city', '')
-        state = location.get('state_province', '')
-        country = location.get('country', '')
-        
-        # Format as "City, State" for US locations or "City, Country" for others
-        if country == 'USA' and state:
-            return f"{city}, {state}" if city else state
-        elif city and country:
-            return f"{city}, {country}"
-        elif city:
-            return city
-        else:
-            return 'Unknown' 
+ 

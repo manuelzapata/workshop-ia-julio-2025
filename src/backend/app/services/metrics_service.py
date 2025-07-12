@@ -1,4 +1,5 @@
 from app.persistence.repositories.metrics_repository import MetricsRepository
+from app.utils.location_formatter import format_location
 
 class MetricsService:
     def __init__(self, repository: MetricsRepository):
@@ -32,20 +33,7 @@ class MetricsService:
             locations = await self.repository.get_all_locations()
             for loc in locations:
                 if loc.get('id') == top_location_id:
-                    # Build location name from city, state, country
-                    city = loc.get('city', '')
-                    state = loc.get('state_province', '')
-                    country = loc.get('country', '')
-                    
-                    # Format as "City, State" for US locations or "City, Country" for others
-                    if country == 'USA' and state:
-                        top_location = f"{city}, {state}" if city else state
-                    elif city and country:
-                        top_location = f"{city}, {country}"
-                    elif city:
-                        top_location = city
-                    else:
-                        top_location = 'Unknown'
+                    top_location = format_location(loc)
                     break
         
         return {

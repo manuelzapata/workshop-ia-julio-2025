@@ -1,3 +1,9 @@
+import os
+# Set environment variables before importing
+os.environ['supabase_url'] = 'http://test-url'
+os.environ['supabase_key'] = 'test-key'
+os.environ['environment'] = 'test'
+
 from app.persistence.repositories.dataset_repository import clean_money
 
 

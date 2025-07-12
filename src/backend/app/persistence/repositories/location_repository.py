@@ -17,9 +17,21 @@ class LocationRepository:
         existing = await supabase_client.get('/rest/v1/location')
         existing_set = set((e['city'], e.get('state_province'), e['country']) for e in existing) if existing else set()
         to_insert = [loc for loc in locations if (loc['city'], loc.get('state_province'), loc['country']) not in existing_set]
-        inserted = []
-        for loc in to_insert:
-            data = {'city': loc['city'], 'state_province': loc.get('state_province'), 'country': loc['country']}
-            res = await supabase_client.post('/rest/v1/location', [data])
-            inserted.append(res)
-        return inserted 
+        if not to_insert:
+            return []
+        
+        # Bulk insert all new locations at once
+        data = [
+            {
+                'city': loc['city'],
+                'state_province': loc.get('state_province'),
+                'country': loc['country']
+            }
+            for loc in to_insert
+        ]
+        try:
+            result = await supabase_client.post('/rest/v1/location', data)
+            return result if isinstance(result, list) else [result]
+        except Exception as e:
+            # Log error and handle appropriately
+            raise Exception(f"Failed to bulk insert locations: {e}") 

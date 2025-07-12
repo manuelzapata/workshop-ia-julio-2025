@@ -10,15 +10,22 @@ class InvestorRepository:
     async def bulk_insert(self, investors: list[str]) -> list[dict]:
         if not investors:
             return []
-        # Consulta masiva de nombres existentes
-        names_str = ','.join([f'"{name}"' for name in investors])
-        params = {'name': f'in.({names_str})'}
-        existing = await supabase_client.get('/rest/v1/investor', params=params)
+        
+        # Get all existing investors first (assuming low volume)
+        existing = await supabase_client.get('/rest/v1/investor')
         existing_names = set(e['name'] for e in existing) if existing else set()
+        
+        # Filter out existing investors
         to_insert = [name for name in investors if name not in existing_names]
-        inserted = []
-        for name in to_insert:
-            data = {'name': name}
-            res = await supabase_client.post('/rest/v1/investor', [data])
-            inserted.append(res)
-        return inserted 
+        
+        if not to_insert:
+            return []
+        
+        # Bulk insert all new investors at once
+        data = [{'name': name} for name in to_insert]
+        try:
+            result = await supabase_client.post('/rest/v1/investor', data)
+            return result if isinstance(result, list) else [result]
+        except Exception as e:
+            # Log error and handle appropriately
+            raise Exception(f"Failed to bulk insert investors: {e}") 

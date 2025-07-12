@@ -52,21 +52,19 @@ def test_bulk_insert_investor(monkeypatch):
     from app.persistence.repositories.investor_repository import InvestorRepository
     calls = {}
     async def fake_get(path, params=None):
-        calls['get'] = params
+        calls['get'] = path
         # Simula que ya existe 'A', pero no 'B'
-        if params and 'in.' in params.get('name', ''):
-            return [{'name': 'A'}]
-        return []
+        return [{'name': 'A'}]
     async def fake_post(path, data=None):
         calls['post'] = data
-        return {'name': data[0]['name']}
+        return [{'name': 'B'}]
     monkeypatch.setattr('app.persistence.supabase_client.supabase_client.get', fake_get)
     monkeypatch.setattr('app.persistence.supabase_client.supabase_client.post', fake_post)
     repo = InvestorRepository()
     result = asyncio.run(repo.bulk_insert(['A', 'B']))
     assert result == [{'name': 'B'}]
-    assert calls['get']['name'].startswith('in.')
-    assert calls['post'][0]['name'] == 'B'
+    assert calls['get'] == '/rest/v1/investor'
+    assert calls['post'] == [{'name': 'B'}]
 
 def test_bulk_insert_investor_empty(monkeypatch):
     from app.persistence.repositories.investor_repository import InvestorRepository
@@ -77,11 +75,10 @@ def test_bulk_insert_investor_empty(monkeypatch):
 def test_bulk_insert_industry(monkeypatch):
     from app.persistence.repositories.industry_repository import IndustryRepository
     async def fake_get(path, params=None):
-        if params and 'in.' in params.get('name', ''):
-            return [{'name': 'X'}]
-        return []
+        # Return existing industry 'X'
+        return [{'name': 'X'}]
     async def fake_post(path, data=None):
-        return {'name': data[0]['name']}
+        return [{'name': 'Y'}]
     monkeypatch.setattr('app.persistence.supabase_client.supabase_client.get', fake_get)
     monkeypatch.setattr('app.persistence.supabase_client.supabase_client.post', fake_post)
     repo = IndustryRepository()
