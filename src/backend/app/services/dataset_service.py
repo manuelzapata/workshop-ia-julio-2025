@@ -198,7 +198,6 @@ class DatasetService:
             if 'Top Investors' in row and row['Top Investors']:
                 for inv in row['Top Investors'].split(','):
                     original_investor_name = inv.strip()
-                    normalized_investor_name = self._normalize(original_investor_name)
                     investor_obj = await self.investor_repo.get_by_name(original_investor_name)
                     if investor_obj:
                         relations.append({'company_id': company_id, 'investor_id': investor_obj['id']})
