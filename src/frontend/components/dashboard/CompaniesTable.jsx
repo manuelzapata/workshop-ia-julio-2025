@@ -1,43 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/Badge';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Select } from '@/components/ui/Select';
 import { ExternalLink, ArrowUpDown } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { formatCurrency, formatNumber } from '@/lib/utils';
 
-const mockCompanies = [
-  { id: 1, name: 'Notion', founded: 2016, revenue: '$100.0M', valuation: '$10.0B', sector: 'Productivity', location: 'San Francisco' },
-  { id: 2, name: 'Discord', founded: 2012, revenue: '$130.0M', valuation: '$15.0B', sector: 'Communication', location: 'San Francisco' },
-  { id: 3, name: 'Figma', founded: 2012, revenue: '$400.0M', valuation: '$20.0B', sector: 'Design', location: 'San Francisco' },
-  { id: 4, name: 'Canva', founded: 2012, revenue: '$1.0B', valuation: '$40.0B', sector: 'Design', location: 'Sydney' },
-  { id: 5, name: 'Databricks', founded: 2013, revenue: '$800.0M', valuation: '$43.0B', sector: 'Data Analytics', location: 'San Francisco' },
-  { id: 6, name: 'Stripe', founded: 2010, revenue: '$7.4B', valuation: '$95.0B', sector: 'FinTech', location: 'San Francisco' },
-];
+export function CompaniesTable({ companies: initialCompanies }) {
+  const [companies, setCompanies] = useState(initialCompanies);
 
-export function CompaniesTable() {
-//   const [companies, setCompanies] = useState([]);
-//   const [loading, setLoading] = useState(true);
-  
-//   useEffect(() => {
-//     async function fetchCompanies() {
-//       try {
-//         // const data = await getCompanies(); // API call
-//         setCompanies(mockCompanies);
-//       } catch (error) {
-//         console.error("Failed to fetch companies:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     }
-//     fetchCompanies();
-//   }, []);
-
-//   if (loading) return <p>Loading companies...</p>;
-//   if (companies.length === 0) return <p>No companies found.</p>;
-
-  const companies = mockCompanies;
+  if (!companies) {
+    return <div className="text-center p-8">Could not load companies.</div>;
+  }
 
   return (
     <div className="bg-white p-4 rounded-lg border">
@@ -70,12 +46,12 @@ export function CompaniesTable() {
               <td className="px-6 py-4">{index + 1}</td>
               <td className="px-6 py-4">
                 <div className="font-semibold">{company.name}</div>
-                <div className="text-xs text-gray-500">Founded {company.founded}</div>
+                <div className="text-xs text-gray-500">Founded {company.year_founded}</div>
               </td>
-              <td className="px-6 py-4">{company.revenue}</td>
-              <td className="px-6 py-4">{company.valuation}</td>
+              <td className="px-6 py-4">{formatCurrency(company.annual_revenue)}</td>
+              <td className="px-6 py-4">{formatCurrency(company.valuation)}</td>
               <td className="px-6 py-4">
-                <Badge>{company.sector}</Badge>
+                <Badge>{company.industry}</Badge>
               </td>
               <td className="px-6 py-4">{company.location}</td>
               <td className="px-6 py-4">

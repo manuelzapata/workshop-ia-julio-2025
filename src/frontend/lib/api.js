@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = 'http://127.0.0.1:8000';
 
 const mockMetrics = {
     totalRevenue: {
@@ -30,29 +30,29 @@ const mockCompanies = [
 
 
 export async function getMetrics() {
-  // try {
-  //   const response = await fetch(`${API_URL}/metrics`);
-  //   if (!response.ok) {
-  //     throw new Error('Failed to fetch metrics');
-  //   }
-  //   return response.json();
-  // } catch (error) {
-  //   console.error(error);
-  //   return mockMetrics; // fallback to mock data
-  // }
-  return Promise.resolve(mockMetrics);
+  try {
+    const response = await fetch(`${API_URL}/api/v1/metrics/`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch metrics');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching metrics:', error);
+    // In a real app, you might want to return a specific error object
+    // or re-throw the error to be handled by the caller.
+    return null; 
+  }
 }
 
 export async function getCompanies() {
-  // try {
-  //   const response = await fetch(`${API_URL}/companies`);
-  //   if (!response.ok) {
-  //     throw new Error('Failed to fetch companies');
-  //   }
-  //   return response.json();
-  // } catch (error) {
-  //   console.error(error);
-  //   return mockCompanies; // fallback to mock data
-  // }
-  return Promise.resolve(mockCompanies);
+  try {
+    const response = await fetch(`${API_URL}/api/v1/company/`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch companies');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching companies:', error);
+    return []; // Return an empty array on error
+  }
 } 
