@@ -1,6 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { MetricsSection } from '@/components/dashboard/MetricsSection';
+import { CompaniesTable } from '@/components/dashboard/CompaniesTable';
+import { MarketOverview } from '@/components/dashboard/MarketOverview';
 
 export default function Home() {
   const [apiStatus, setApiStatus] = useState('loading...');
@@ -24,9 +27,16 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      <h2>Frontend</h2>
-      <p>API Status: {apiStatus}</p>
+    <div className="p-8 bg-gray-50 min-h-screen">
+      <MetricsSection />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <CompaniesTable />
+        </div>
+        <div>
+          <MarketOverview />
+        </div>
+      </div>
     </div>
   );
 } 

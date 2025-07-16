@@ -73,33 +73,33 @@
   - [x] Crear componentes esqueleto como `Header.jsx` y `Footer.jsx`.
 
 ### 3.2. Dashboard [[WIA-18](https://linear.app/remoto-now/issue/WIA-18/32-dashboard-frontend)]
-- [ ] **Página Principal del Dashboard**:
-  - [ ] Reemplazar contenido de `app/page.jsx` con estructura del dashboard.
-  - [ ] Implementar layout de 2 columnas (empresas + sidebar).
+- [x] **Página Principal del Dashboard**:
+  - [x] Reemplazar contenido de `app/page.jsx` con estructura del dashboard.
+  - [x] Implementar layout de 2 columnas (empresas + sidebar).
   - [ ] Conectar con APIs del backend para datos reales.
-- [ ] **Sección de Métricas**:
-  - [ ] Crear componente `MetricsSection.jsx` con grid de 5 tarjetas.
-  - [ ] Crear componente `MetricCard.jsx` reutilizable.
-  - [ ] Implementar funciones en `lib/api.js` para métricas.
-  - [ ] Manejar estados de carga y error.
-- [ ] **Tabla de Empresas**:
-  - [ ] Crear componente `CompaniesTable.jsx` con estructura completa.
+- [x] **Sección de Métricas**:
+  - [x] Crear componente `MetricsSection.jsx` con grid de 5 tarjetas.
+  - [x] Crear componente `MetricCard.jsx` reutilizable.
+  - [x] Implementar funciones en `lib/api.js` para métricas.
+  - [x] Manejar estados de carga y error.
+- [x] **Tabla de Empresas**:
+  - [x] Crear componente `CompaniesTable.jsx` con estructura completa.
   - [ ] Implementar búsqueda y filtrado funcional.
   - [ ] Crear componente `Table.jsx` reutilizable.
   - [ ] Conectar con endpoint de empresas.
-- [ ] **Market Overview Sidebar**:
-  - [ ] Crear componente `MarketOverview.jsx`.
-  - [ ] Implementar lista de sectores con indicadores de color.
-  - [ ] Mostrar distribución de ingresos por sector.
-- [ ] **Funcionalidad de API**:
-  - [ ] Implementar funciones en `lib/api.js` para todos los endpoints.
+- [x] **Market Overview Sidebar**:
+  - [x] Crear componente `MarketOverview.jsx`.
+  - [x] Implementar lista de sectores con indicadores de color.
+  - [x] Mostrar distribución de ingresos por sector.
+- [x] **Funcionalidad de API**:
+  - [x] Implementar funciones en `lib/api.js` para todos los endpoints.
   - [ ] Crear hooks personalizados para manejo de estado.
-  - [ ] Implementar manejo de errores y estados de carga.
-- [ ] **Componentes UI Base**:
-  - [ ] Crear `SearchInput.jsx` reutilizable.
-  - [ ] Crear `Badge.jsx` para etiquetas.
-  - [ ] Crear `Button.jsx` con variantes.
-  - [ ] Asegurar responsive design y accesibilidad.
+  - [x] Implementar manejo de errores y estados de carga.
+- [x] **Componentes UI Base**:
+  - [x] Crear `SearchInput.jsx` reutilizable.
+  - [x] Crear `Badge.jsx` para etiquetas.
+  - [x] Crear `Button.jsx` con variantes.
+  - [x] Asegurar responsive design y accesibilidad.
 
 ### 3.3. Detalle de Empresa [[WIA-19](https://linear.app/remoto-now/issue/WIA-19/33-detalle-de-empresa-frontend)]
 - [ ] Implementar la vista de detalle para una empresa específica.
