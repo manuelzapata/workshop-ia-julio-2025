@@ -4,32 +4,18 @@ const mockMetrics = {
     totalRevenue: {
         title: "Total Revenue",
         value: "$9.8B",
-        change: "+12% vs last quarter",
-        changeType: "positive",
     },
     avgValuation: {
         title: "Avg Valuation",
         value: "$37.2B",
-        change: "+8% median growth",
-        changeType: "positive",
     },
     fundingRounds: {
         title: "Funding Rounds",
         value: "1.2K",
-        change: "+15% this year",
-        changeType: "positive",
     },
     topLocation: {
         title: "Top Location",
         value: "San Francisco",
-        change: "4 companies in this hub",
-        changeType: "positive",
-    },
-    growthRate: {
-        title: "Growth Rate",
-        value: "+23%",
-        change: "+5% vs last year",
-        changeType: "positive",
     },
 };
 
