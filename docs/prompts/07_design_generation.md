@@ -21,3 +21,7 @@ Genera el prompt en markdown, con un máximo de 1000 caracteres.
 Analiza la tarea 3.1 en @tasks.md y detallala mejor para que sea clara la implementación.
 
 Toma como contexto @planning.md y @/adrs 
+
+# Prompt 3
+
+Ya tenemos la UI diseñada por v0. Toma los screenshots adjuntos a este mensaje y actualiza la lista de tareas en @tasks.md para implementar la interfaz. Debes actualizar la sección 3.2.
